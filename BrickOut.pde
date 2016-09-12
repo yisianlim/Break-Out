@@ -1,0 +1,29 @@
+Paddle paddle;
+Ball ball;
+
+void setup() {
+  size(900, 900);
+  frameRate(120);
+  paddle = new Paddle();
+  ball = new Ball(450,450);
+}
+
+void draw() {
+  background(69, 58, 53);
+  drawBoundaries();
+  paddle.move();
+  paddle.draw();
+  ball.draw();
+  ball.move();
+  ball.isTouchingWall();
+  ball.isTouchingPaddle(paddle);
+}
+
+//draw the bounding line at all sides except the bottom
+void drawBoundaries() {
+  strokeWeight(50);
+  stroke(153, 88, 61);
+  line(0, 0, width, 0);
+  line(0, 0, 0, height);
+  line(width, 0, width, height);
+}
