@@ -9,7 +9,7 @@ void setup() {
 }
 
 void draw() {
-  background(69, 58, 53);
+  background(38, 69, 81);
   drawBoundaries();
   paddle.move();
   paddle.draw();
@@ -22,7 +22,7 @@ void draw() {
 //draw the bounding line at all sides except the bottom
 void drawBoundaries() {
   strokeWeight(50);
-  stroke(153, 88, 61);
+  stroke(34, 124, 111);
   line(0, 0, width, 0);
   line(0, 0, 0, height);
   line(width, 0, width, height);
