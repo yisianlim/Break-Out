@@ -11,10 +11,8 @@ void setup() {
 void draw() {
   background(38, 69, 81);
   drawBoundaries();
-  paddle.move();
   paddle.draw();
   ball.draw();
-  ball.move();
   ball.isTouchingWall();
   ball.isTouchingPaddle(paddle);
 }
