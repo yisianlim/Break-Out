@@ -1,0 +1,51 @@
+class Brick {
+  PImage img;
+  String colour;
+  int BrickWidth = 100;
+  int BrickHeight = 35;
+  boolean brickActive;
+  int count = 0;
+
+  float x, y;
+
+  Brick(String col, float x, float y) {
+    this.colour = col;
+    this.x=x;
+    this.y=y;
+    brickActive = true;
+  }
+
+  void draw() {
+    if (brickActive) {
+      if (colour.equals("red")) fill(89, 20, 13);
+      if (colour.equals("orange")) fill(194, 90, 39);
+      if (colour.equals("yellow")) fill(247, 223, 102);
+      if (colour.equals("blue")) fill(35, 165, 222);
+      rect(x, y, BrickWidth, BrickHeight);
+
+      //if (colour.equals("red")) image(red, x, y, BrickWidth, BrickHeight);
+      //if (colour.equals("orange")) image(orange, x, y, BrickWidth, BrickHeight);
+      //if (colour.equals("blue")) image(blue, x, y, BrickWidth, BrickHeight);
+      //if (colour.equals("yellow")) image(, x, y, BrickWidth, BrickHeight);
+    }
+  }
+
+  boolean isActive() {
+    return brickActive;
+  }
+
+  void deactivate() {
+    if (colour.equals("red")) {
+      count++;
+      if (count == 3) {
+        brickActive = false;
+        fill(38, 69, 81);
+        game.ScoreUpdate(colour);
+      }
+    } else {
+      brickActive = false;
+      fill(38, 69, 81);
+      game.ScoreUpdate(colour);
+    }
+  }
+}
