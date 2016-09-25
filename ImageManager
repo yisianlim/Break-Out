@@ -1,0 +1,19 @@
+
+class ImageManager {
+  PImage[] images;
+  int imageCount = 6;
+  float x, y;
+  int offset=50;
+
+  ImageManager() {
+    images = new PImage[imageCount];
+    for (int i=0; i<imageCount; i++) {
+      String filename = "sequence"+i+".png";
+      images[i] = loadImage(filename);
+    }
+  }
+
+  void display(float x, float y) {
+      image(images[3], x-offset, y-(offset*2),200,200);
+  }
+}
