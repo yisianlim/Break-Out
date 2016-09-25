@@ -1,0 +1,51 @@
+class Game {
+  int points;
+  int level;
+  boolean active;
+  int score = 0;
+  PFont f;
+  
+  HashMap<String, Integer> ColorScore = new HashMap<String,Integer>();
+  
+
+  Game() {
+    points = 0;
+    level = 1;
+    active = false;
+    ColorScore.put("red",10);
+    ColorScore.put("blue",2);
+    ColorScore.put("yellow",3);
+    ColorScore.put("orange",5);
+    f = createFont("Arial",20,true);
+  }
+
+  void build(Brick[][] bricks) {
+    for (int row=0; row<bricks.length; row++) {
+      for (int col=0; col<bricks[row].length; col++) {
+        bricks[row][col].draw();
+      }
+    }
+  }
+  
+  void scoreDisplay(){
+    String scoring = "score :"+score;
+    textFont(f,50);
+    text(scoring,1000,450);
+  }
+  
+  void ScoreUpdate(String colour){
+    score+= ColorScore.get(colour);
+  }
+  
+
+  //void reset(Brick[][] bricks) {
+  //  for (int row=0; row<bricks.length; row++) {
+  //    for (int col=0; col<bricks[row].length; col++) {
+  //      bricks[row][col].brickActive = true;
+  //    }
+  //  }
+  //}
+
+  //void determine_collision(Ball ball, Brick brick) {
+  //}
+}
