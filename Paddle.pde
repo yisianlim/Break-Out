@@ -19,14 +19,14 @@ class Paddle {
         if (keyCode == LEFT) {
           if (x>30) x-=dx; //move to the left as long as it doesn't hit the boundary
         } else if (keyCode == RIGHT) {
-          if(x+PWidth<width-30)x+=dx; //move to the right as long as it doesn't hit the boundary
+          if(x+PWidth<GameWidth-30)x+=dx; //move to the right as long as it doesn't hit the boundary
         }
-        
       }
     }
   }
 
   void draw() {
+    move();
     image(img, x, y, PWidth, PHeight);
   }
 }
