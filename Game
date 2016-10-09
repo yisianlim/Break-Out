@@ -1,51 +1,129 @@
 class Game {
+
+  //for arrangement of level 1
+  String[][] colors = {
+    {"red", "red", "red", "red", "red", "red", "red", "red"}, 
+    {"red", "red", "red", "red", "red", "red", "red", "red"}, 
+    {"orange", "orange", "orange", "orange", "orange", "orange", "orange", "orange"}, 
+    {"orange", "orange", "orange", "orange", "orange", "orange", "orange", "orange"}, 
+    {"yellow", "yellow", "yellow", "yellow", "yellow", "yellow", "yellow", "yellow"}, 
+    {"yellow", "yellow", "yellow", "yellow", "yellow", "yellow", "yellow", "yellow"}, 
+    {"blue", "blue", "blue", "blue", "blue", "blue", "blue", "blue"}, 
+    {"blue", "blue", "blue", "blue", "blue", "blue", "blue", "blue"}};
+
+  //for arrangement of level 2
+  String[][] colors2 = {
+    {"red", "red", null, null, null, null, "red", "red"}, 
+    {null, null, "red", null, null, "red", null, null}, 
+    {"orange", "orange", "yellow", "red", "red", "yellow", "orange", "orange"}, 
+    {"blue", "yellow", "orange", "yellow", "yellow", "orange", "yellow", "blue"}, 
+    {null, "blue", "blue", "orange", "orange", "blue", "blue", null}, 
+    {null, null, null, "blue", "special", null, null, null}, 
+    {null, null, "yellow", "blue", "blue", "yellow", null, null}, 
+    {"special", "yellow", "blue", "orange", "orange", "blue", "yellow", "sizer"}, 
+    {"yellow", "blue", "orange", "sizer", "live", "orange", "blue", "yellow"}, 
+    {"blue", "orange", null, "yellow", "yellow", null, "orange", "blue"}};
+
+
+
   int points;
   int level;
   boolean active;
   int score = 0;
   PFont f;
-  
-  HashMap<String, Integer> ColorScore = new HashMap<String,Integer>();
-  
+  int lives = 3;
+  boolean GameIsOver = false;
+  PImage scoring = loadImage("score.png");
+  PImage LIVES = loadImage("lives.png");
+  PImage Invader = loadImage("Invader.png");
+  PImage HealthPower = loadImage("HP.png");
+
+  HashMap<String, Integer> ColorScore = new HashMap<String, Integer>();
+
 
   Game() {
     points = 0;
     level = 1;
     active = false;
-    ColorScore.put("red",10);
-    ColorScore.put("blue",2);
-    ColorScore.put("yellow",3);
-    ColorScore.put("orange",5);
-    f = createFont("Arial",20,true);
+    ColorScore.put("red", 10);
+    ColorScore.put("blue", 2);
+    ColorScore.put("yellow", 3);
+    ColorScore.put("orange", 5);
+    ColorScore.put("special", 5);
+    ColorScore.put("sizer", 5);
+    ColorScore.put("live",5);
+    f = createFont("Semringah.ttf",25);
   }
 
   void build(Brick[][] bricks) {
     for (int row=0; row<bricks.length; row++) {
       for (int col=0; col<bricks[row].length; col++) {
-        bricks[row][col].draw();
+        if (bricks[row][col]!=null) {
+          bricks[row][col].draw();
+        }
       }
+    }
+    /**********SPECIAL BRICK SETTER**********/
+    if (GameLevel1) {
+
+      iceQueenBrick = bricks[ROW][COL]; 
+      iceQueenBrick.colour = "special";
+      iceQueenBrick2 = bricks[ROW1][COL1];
+      iceQueenBrick2.colour = "special";
+      sizerBrick = bricks[ROW2][COL2];
+      sizerBrick.colour = "sizer";
+      LiveBrick = bricks[ROW3][COL3];
+      LiveBrick.colour = "live";
+    } 
+    
+    else if (GameLevel2) {
+      Level2IceQueenBrick1 = bricks2[7][0];
+      Level2IceQueenBrick2 = bricks2[5][4];
+      Level2LiveBrick = bricks2[8][4];
+      Level2sizerBrick1 =  bricks2[8][3];
+      Level2sizerBrick2 = bricks2[7][7];
+      
+    }
+  }
+
+  void scoreDisplay() {
+    image(scoring, 980, 280, 300, 100);
+    String scoring = ""+score;
+    textFont(f, 50);
+    fill(226,195,127);
+    text(scoring, 1090, 430);
+  }
+
+  void ScoreUpdate(String colour) {
+    score+= ColorScore.get(colour);
+  }
+
+  void DrawLives() {
+    image(LIVES, 980, 60, 300, 100);
+    for (int i=0; i<lives; i++) {
+      heart.display(950+60*i, 150);
     }
   }
   
-  void scoreDisplay(){
-    String scoring = "score :"+score;
-    textFont(f,50);
-    text(scoring,1000,450);
+  void DrawHP(int HP){
+    image(Invader, 980, 500, 300,100);
+    fill(0,255,0);
+    if(HP>0)image(HealthPower,950,600,HP*3, 35);
   }
-  
-  void ScoreUpdate(String colour){
-    score+= ColorScore.get(colour);
+
+  boolean checkIfItAdvances() {
+    if (keyPressed) if (key=='k')return true;
+    //if all the bricks are inactive 
+    for (int row=0; row<bricks.length; row++) {
+      for (int col=0; col<bricks[row].length; col++) {
+        if (bricks[row][col].brickActive)return false;
+      }
+    }
+    return true;
   }
-  
 
-  //void reset(Brick[][] bricks) {
-  //  for (int row=0; row<bricks.length; row++) {
-  //    for (int col=0; col<bricks[row].length; col++) {
-  //      bricks[row][col].brickActive = true;
-  //    }
-  //  }
-  //}
-
-  //void determine_collision(Ball ball, Brick brick) {
-  //}
+  boolean GameIsOver() {
+    if (lives<=0) return true;
+    return false;
+  }
 }
