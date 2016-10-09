@@ -1,19 +1,21 @@
 
+//class for loading images
+
 class ImageManager {
-  PImage[] images;
+  PImage Image;
   int imageCount = 6;
   float x, y;
   int offset=50;
+  String imageName;
 
-  ImageManager() {
-    images = new PImage[imageCount];
-    for (int i=0; i<imageCount; i++) {
-      String filename = "sequence"+i+".png";
-      images[i] = loadImage(filename);
+  ImageManager(String file) {
+      Image = loadImage(file+".png");
+      imageName = file;
     }
-  }
 
   void display(float x, float y) {
-      image(images[3], x-offset, y-(offset*2),200,200);
+    if(imageName.equals("poof"))image(Image, x-offset, y-(offset*2),200,200);
+    if(imageName.equals("heart"))image(Image, x, y,50,50);
+    if(imageName.equals("obstacleHIT")) image(Image,x,y,60,40);
   }
 }
