@@ -8,7 +8,7 @@ class Brick {
   boolean brickActive;
   int count = 0;
 
-  int speed = 5; //for the purpose of the special brick
+  int speed = 3; //for the purpose of the special brick
   boolean hitSpecialBrick = false; //has the ball hit the special brick?
 
   float x, y;
@@ -20,17 +20,22 @@ class Brick {
     brickActive = true;
   }
 
+//the draw color coding for the bricks 
   void draw() {
-    if (brickActive) {
+    if (brickActive) { //only draw if the brick is active!
       if (colour.equals("red")) {
-        if (count == 0)fill(89, 20, 13);
+        if (count == 0)fill(152, 30, 52);//fill(89, 20, 13);
         if (count == 1)fill(112, 41, 37);
         if (count == 2)fill(104, 66, 64);
       }
       if (colour.equals("orange")) fill(194, 90, 39);
       if (colour.equals("yellow")) fill(247, 223, 102);
-      if (colour.equals("blue")) fill(35, 165, 222);
+      if (colour.equals("blue")) fill(199, 247, 102);//fill(35, 165, 222);
+      if(colour.equals("green")) fill(128,195,28);
+      if(colour.equals("halloween"))fill(255,91,0);
       rect(x, y, BrickWidth, BrickHeight);
+      
+      
       if (colour.equals("special")) image(IceQueenBrick, x, y, BrickWidth, BrickHeight);
       if (colour.equals("sizer")) image(SizerBrick, x, y, BrickWidth, BrickHeight);
       if (colour.equals("live")) image(AddLives, x, y, BrickWidth, BrickHeight);
@@ -49,6 +54,7 @@ class Brick {
     return false;
   }
 
+//the falling mechanism as the special brick falls
   void specialBrickMove() {
     if (y>height) brickActive=false; //if the brick falls all the way to the bottom, then deactivate it
     if (brickActive && hitSpecialBrick && this.colour.equals("special")) {
@@ -56,7 +62,6 @@ class Brick {
       //check if the paddle catches it, then transform the paddle into ice queen mode
       if (paddle.PaddleCaughtTheSpecialBrick(this)) {
         game.points+=10; //add another 10 points if the player catches the brick
-        paddle.prevState = paddle.state;
         paddle.state = "transformed";
         brickActive = false;
       }
@@ -64,7 +69,6 @@ class Brick {
       y+=speed;//fall down to the end
       if (paddle.PaddleCaughtTheSpecialBrick(this)) {
         game.points+=10; //add another 10 points if the player catches the brick
-        paddle.prevState = paddle.state;
         paddle.state = "sizer";
         brickActive = false;
       }
@@ -78,6 +82,7 @@ class Brick {
     }
   }
 
+//deactivate the brick if once it gets hit!
   void deactivate() {
     if (SpecialBrick()) {
       hitSpecialBrick = true;
