@@ -1,5 +1,5 @@
 class GameOver {
-  Drop[] drops = new Drop[100];
+  Drop[] drops = new Drop[1000];
   PImage over;
   PImage restartNormal, restartHover;
 
