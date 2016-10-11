@@ -6,20 +6,20 @@ int BrickHeight = 35;
 int offset = 40;
 int spacing = 5;
 Brick[][] bricks; //brick array for level 1
-Brick[][] bricks2; //brick array for leve 2
+Brick[][] bricks2; //brick array for level 2
+Brick[][] bricks3; //brick array for level 3
 Game game;
-PImage bg;
 int GameWidth = 900;
 ImageManager brickShatter;
 ImageManager heart;
 ImageManager ObstacleHit;
 StartScreen screen;
-Obstacle obstacle;
-Explosion explode;
+Obstacle obstacle, obstacle2, obstacle3;
 GameOver gameOver;
 
 boolean GameLevel1;
 boolean GameLevel2;
+boolean GameLevel3;
 boolean GameOver;
 
 /*********************************SPECIAL BRICK GENERATOR*******************************/
@@ -29,6 +29,9 @@ Brick iceQueenBrick, iceQueenBrick2, sizerBrick, LiveBrick;
 
 //LEVEL2
 Brick Level2IceQueenBrick1, Level2IceQueenBrick2, Level2LiveBrick, Level2sizerBrick1, Level2sizerBrick2;
+
+//LEVEL3 
+Brick Level3IceQueenBrick1, Level3IceQueenBrick2, Level3LiveBrick1, Level3LiveBrick2;
 /***************************************************************************************/
 
 void setup() {
@@ -39,8 +42,6 @@ void setup() {
 }
 
 void reset() {
-  bg = loadImage("GameBG.png");
-  explode = new Explosion(1000, 500);
   //generate the chosen row & col of the special brick to make the paddle go on ice queen mode
   ROW = 1;
   COL = (int)random(0, 7);
@@ -59,18 +60,23 @@ void reset() {
   GameOver = false;
   GameLevel2 = false;
   gameOver = new GameOver();
+  
   bricks  = new Brick[8][8]; 
   bricks2 = new Brick[10][8];
+  bricks3 = new Brick[11][8];
   paddle = new Paddle();
-  ball = new Ball(450, 450);
+  ball = new Ball(paddle.x+paddle.PWidth/2, 730);
   game = new Game();
   brickShatter = new ImageManager("poof");
   heart = new ImageManager("heart");
   ObstacleHit = new ImageManager("obstacleHIT");
   screen = new StartScreen();
-  obstacle = new Obstacle();
+  obstacle = new Obstacle(450, 520);
+  obstacle2 = new Obstacle(30, 580);
+  obstacle3 = new Obstacle(800, 640);
   ices = new ArrayList<Ice>();
 
+//setup the array of bricks for level 1
   for (int row=0; row<game.colors.length; row++) {
     for (int col=0; col<game.colors[row].length; col++) {
       if (game.colors[row][col]!=null) {
@@ -79,10 +85,20 @@ void reset() {
     }
   }
 
+//setup the array of bricks for level 2
   for (int row=0; row<game.colors2.length; row++) {
     for (int col=0; col<game.colors2[row].length; col++) {
       if (game.colors2[row][col]!=null) {
         bricks2[row][col] = new Brick(game.colors2[row][col], ((BrickWidth+spacing)*col)+offset, ((BrickHeight+spacing)*row)+offset);
+      }
+    }
+  }
+
+//setup the array of bricks for level 3 - Halloween special!
+  for (int row=0; row<game.colors3.length; row++) {
+    for (int col=0; col<game.colors3[row].length; col++) {
+      if (game.colors3[row][col]!=null) {
+        bricks3[row][col] = new Brick(game.colors3[row][col], ((BrickWidth+spacing)*col)+offset, ((BrickHeight+spacing)*row)+offset);
       }
     }
   }
@@ -94,19 +110,19 @@ void draw() {
     if (screen.GameHasStarted()) {
       GameLevel1 = true;
       GameLevel2 = false;
+      GameLevel3 = false;
     }
   }
-
-  if (GameLevel1 && !GameLevel2) {
+//level 1 mechanism 
+  if (GameLevel1 && !GameLevel2 && !GameLevel3) {
 
     background(38, 69, 81);
-    //image(bg,25,25,860,900);
-    explode.draw();
     drawBoundaries();
     paddle.draw();
     ball.draw();
     ball.check();
     ball.DidItLoseALive();
+    ball.HasBallMoved();
     game.build(bricks);
     game.scoreDisplay();
     game.DrawLives();
@@ -134,14 +150,17 @@ void draw() {
     if (game.GameIsOver()) {
       GameLevel1 = false;
       GameLevel2 = false;
+      GameLevel3 = false;
       GameOver = true;
     }
 
-    if (game.checkIfItAdvances()) {
+    if (game.checkIfItAdvancesToLevel2()) {
       GameLevel1 = false;
       GameLevel2 = true;
-      ball = new Ball(450, 450);
+      GameLevel3 = false;
+      ball = new Ball(paddle.x+paddle.PWidth/2, 730);
     }
+    //level 2 mechanism 
   } else if (GameLevel2) {
     background(38, 69, 81);
     drawBoundaries();
@@ -150,10 +169,11 @@ void draw() {
     ball.draw();
     ball.check();
     ball.DidItLoseALive();
+    ball.HasBallMoved();
     game.build(bricks2);
     game.scoreDisplay();
     game.DrawLives();
-    game.DrawHP(obstacle.HP);
+    game.DrawHP(obstacle.HP,600);
 
     Level2IceQueenBrick1.specialBrickMove(); 
     Level2IceQueenBrick2.specialBrickMove(); 
@@ -176,11 +196,71 @@ void draw() {
         }
       }
     }
+
+    if (game.checkIfItAdvancesToLevel3()) {
+      GameLevel1 = false;
+      GameLevel2 = false;
+      GameLevel3 = true;
+      ball = new Ball(paddle.x+paddle.PWidth/2, 730);
+    }
+
     if (game.GameIsOver()) {
       GameLevel1 = false;
       GameLevel2 = false;
+      GameLevel3 = false;
       GameOver = true;
     }
+    //level 3 mechanism 
+  } else if (GameLevel3) {
+    background(38, 69, 81);
+    drawBoundaries();
+    paddle.draw();
+    obstacle.draw();
+    obstacle2.draw();
+    obstacle3.draw();
+    ball.draw();
+    ball.check();
+    ball.DidItLoseALive();
+    ball.HasBallMoved();
+    game.build(bricks3);
+    game.scoreDisplay();
+    game.DrawLives();
+    game.DrawHP(obstacle.HP,600);
+    game.DrawHP(obstacle2.HP,650);
+    game.DrawHP(obstacle3.HP,700);
+    
+    Level3IceQueenBrick1.specialBrickMove();
+    Level3IceQueenBrick2.specialBrickMove();
+    Level3LiveBrick1.specialBrickMove();
+    Level3LiveBrick2.specialBrickMove();
+
+    //check if the ice destroyed the bricks 
+    for (int i=0; i<ices.size(); i++) {
+      if (i>=ices.size() || ices.size()<=0)break;
+      ices.get(i).move();
+      if (ices.size()>0) {
+        if (GameLevel3){
+          ices.get(i).DestroyedEnemy(obstacle);
+          ices.get(i).DestroyedEnemy(obstacle2);
+          ices.get(i).DestroyedEnemy(obstacle3);
+        }
+        ices.get(i).draw();
+      }
+      //check if the ice is touching any brick
+      for (int row=0; row<bricks3.length; row++) {
+        for (int col=0; col<bricks3[row].length; col++) {
+          if (ices.size()>0 && bricks3[row][col]!=null)ices.get(i).DestroyedBrick(bricks3[row][col]);
+        }
+      }
+    }
+
+    if (game.GameIsOver()) {
+      GameLevel1 = false;
+      GameLevel2 = false;
+      GameLevel3 = false;
+      GameOver = true;
+    }
+    //game over screen
   } else if (GameOver) {
     image(gameOver.over, 0, 0, width, height);
     gameOver.display();
