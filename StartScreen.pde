@@ -2,7 +2,7 @@ class StartScreen {
   PImage main;
   boolean normal = true;
   boolean hover = false;
-  PImage normalButton, hoverButton, clickedButton;
+  PImage normalButton, hoverButton;
   
   int leftButton = 500;
   int topButton = 70;
