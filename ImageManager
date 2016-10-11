@@ -1,6 +1,5 @@
 
 //class for loading images
-
 class ImageManager {
   PImage Image;
   int imageCount = 6;
