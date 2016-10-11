@@ -2,6 +2,7 @@ class Ball {
   PVector pos, vel;
   float radius = 15;
   float m;
+  boolean BallMoved = false;
 
   //array to store the old x and y positions
   int num = 4;
@@ -13,9 +14,16 @@ class Ball {
 
   Ball(float x, float y) {
     pos = new PVector(x, y);
-    vel = new PVector(6, 9); //2,5
-    m = radius*.1;
+    vel = new PVector(0, 0); //2,5
   }
+
+  void HasBallMoved() {
+    if (keyPressed) if (key=='s') {
+      BallMoved = true;
+      vel = new PVector(2, 5);
+    }
+  }
+
 
   void draw() {
     //the positions of the ball are recorded into an array and played back every frame. 
@@ -26,10 +34,10 @@ class Ball {
 
     noStroke();
     for (int i=0; i<num; i++) {
-      if (i==0) fill(230, 110, 80,25);//fill(92, 81, 84); //the color closest to the background color
-      if (i==1) fill(230, 110, 80,50);//fill(117, 86, 85);
-      if (i==2) fill(230, 110, 80,150);//fill(142, 92, 84);
-      if (i==3) fill(230, 110, 80,255); //the original color of the ball
+      if (i==0) fill(101, 239, 184, 25);
+      if (i==1) fill(101, 239, 184, 50);
+      if (i==2) fill(101, 239, 184, 150);
+      if (i==3) fill(101, 239, 184, 255);
       int index = (current+1+i)%num;
       ellipse(x[index], y[index], (radius*2)+i, (radius*2)+i);
     }
@@ -40,6 +48,7 @@ class Ball {
     pos.add(vel);
   }
 
+  //the different checks for the ball for each level
   void check() {
     isTouchingWall(pos);
     isTouchingPaddle(pos, paddle);
@@ -60,42 +69,33 @@ class Ball {
       }
       isTouchingObstacle(pos, obstacle);
     }
+
+    if (GameLevel3) {
+      for (int row=0; row<bricks3.length; row++) {
+        for (int col=0; col<bricks3[row].length; col++) {
+          if (bricks3[row][col]!=null) {
+            isTouchingBrick(pos, bricks3[row][col]);
+          }
+        }
+      }
+      isTouchingObstacle(pos, obstacle);
+      isTouchingObstacle(pos, obstacle2);
+      isTouchingObstacle(pos, obstacle3);
+    }
   }
 
-  //void check() {
-  //  int currentFrame = frameCount%num;
-  //  int index;
-  //  if (currentFrame==0) index = 3;
-  //  else index = currentFrame-1;
-  //  old = new PVector(x[index], y[index]);
-  //  println("Old :"+old.x);
-  //  current = new PVector(pos.x, pos.y);
-  //  println("New :"+current.x);
+  //to check if the ball went past the bottom boundary and lost a live
+  void DidItLoseALive() {
+    if (ball.pos.y + radius > height) { 
+      //reset the position of the ball
+      ball = new Ball(paddle.x+paddle.PWidth/2, 730);
+      game.lives = game.lives-1;
+      paddle.state = "normal"; //paddle state is back to the default 
+      return;
+    }
+  }
 
-  //  //get the distance between old and current 
-  //  float distanceX = old.x - current.x;
-  //  println(distanceX);
-  //  float distanceY = old.y - current.y;
-
-  //  for (int i=1; i>0; i--) {
-  //    //println(i);
-  //    float intervalX = distanceX/i;
-  //    float intervalY = distanceY/i;
-  //    PVector toCheck = new PVector(old.x+intervalX, old.y+intervalY);// value of intervals of distance to check in each frame
-
-  //    isTouchingWall(toCheck);
-  //    isTouchingPaddle(toCheck, paddle);
-  //    //check if the ball is touching the brick
-  //    for (int row=0; row<bricks.length; row++) {
-  //      for (int col=0; col<bricks[row].length; col++) {
-  //        isTouchingBrick(toCheck, bricks[row][col]); //check the ball 20 times in each frame
-  //      }
-  //    }
-
-  //    isTouchingObstacle(toCheck, obstacle);
-  //  }
-  //}
-
+  //check if the ball touch the boundary
   void isTouchingWall(PVector vector) {
     if (vector.x + radius > GameWidth-20) {
       vel.x*=-1;
@@ -111,18 +111,7 @@ class Ball {
     }
   }
 
-  void DidItLoseALive() {
-    if (ball.pos.y + radius > height) { 
-      //reset the position of the ball
-      ball.pos.x = 450;
-      ball.pos.y =450;
-      vel = new PVector(4, 6);
-      game.lives = game.lives-1;
-      paddle.state = "normal"; //paddle state is back to the default 
-      return;
-    }
-  }
-
+  //check if the ball touch the paddle
   void isTouchingPaddle(PVector vector, Paddle paddle) {    
     //for the top of paddle
     if (vector.y+radius>paddle.y && vector.y<paddle.y && vector.x>paddle.x && vector.x<paddle.x+paddle.PWidth) {
@@ -153,6 +142,7 @@ class Ball {
     }
   }
 
+  //check if the ball is touching the brick
   void isTouchingBrick(PVector vector, Brick brick) {
     if (!brick.isActive())return;
 
@@ -217,59 +207,7 @@ class Ball {
     }
   }
 
-  //  void isTouchingObstacle(PVector vector, Obstacle obstacle) {
-  //    if (obstacle.dead)return; //if the obstacle is dead, then return
-  //    //position of obstacle
-  //    PVector obs = new PVector(obstacle.x, obstacle.y);
-  //    //get distances between the ball and the obstacle
-  //    PVector bVect = PVector.sub(vector, obs);
-
-  //    //calculate magnitude of the vector separating the ball and obstacle
-  //    float bVectMag = bVect.mag();
-  //    println(bVectMag);
-
-  //    if (bVectMag < 60) {
-  //      println("OH!");
-  //      //get the angle of bVect
-  //      float theta = bVect.heading();
-  //      //precalculate trig values
-  //      float sine = sin(theta);
-  //      float cosine = cos(theta);
-
-  //      //the ball's position is relative to the obstacle so we can use the vector between them (bVect) as the reference point in the rotation expression
-  //      PVector[] bTemp = {new PVector(), new PVector()};
-  //      bTemp[1].x = cosine*bVect.x + sine*bVect.y;
-  //      bTemp[1].y = cosine*bVect.y - sine*bVect.x;
-
-  //      //rotate Temporary velocities
-  //      PVector[] vTemp = {new PVector()};
-  //      vTemp[0].x  = cosine * vel.x + sine * vel.y;
-  //      vTemp[0].y  = cosine * vel.y - sine * vel.x;
-
-  //      //after velocities are rotated, we use conservation of momentum equations to calculate velocity along the x-axis
-  //      PVector[] vFinal = {new PVector(), new PVector()};
-
-  //      //final rotated velocity for the ball
-  //      vFinal[0].x = ((m) * vTemp[0].x / (m));
-  //      vFinal[0].y = vTemp[0].y;
-
-  //      // hack to avoid clumping
-  //      bTemp[0].x += vFinal[0].x;
-  //      bTemp[1].x += vFinal[1].x;
-
-  //      PVector[] bFinal = { new PVector()};
-
-  //      bFinal[0].x = cosine * bTemp[0].x - sine * bTemp[0].y;
-  //      bFinal[0].y = cosine * bTemp[0].y + sine * bTemp[0].x;
-
-  //      pos.add(bFinal[0]);
-
-  //      // update velocities
-  //      vel.x = cosine * vFinal[0].x - sine * vFinal[0].y;
-  //      vel.y = cosine * vFinal[0].y + sine * vFinal[0].x;
-  //    }
-  //  }
-
+  //check if the ball is touching the obstacle
   void isTouchingObstacle(PVector vector, Obstacle obstacle) {
     if (obstacle.dead)return; //if the obstacle is dead, then return
 
