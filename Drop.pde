@@ -14,6 +14,6 @@ class Drop {
   void show() {
     fall();
     fill(145, 29, 6);
-    ellipse(x, y, 20, 20);
+    rect(x, y, 10, 10);
   }
 }
