@@ -8,11 +8,10 @@ class Obstacle{
   boolean dead = false;
 
   float x,y;
-
-  Obstacle() {
+  Obstacle(float x, float y) {
     img = loadImage("obstacle.png");
-    x = 450;
-    y = 520;
+    this.x = x;
+    this.y = y;
     HP = 100;
   }
   
