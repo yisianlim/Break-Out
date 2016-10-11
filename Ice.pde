@@ -4,7 +4,7 @@
 //spawn bricks at each time
 //shooting makes the paddle smaller
 //shooting allows the obstacle to be destroyed 
-
+//for the ice object that the IceQueen paddle emits
 class Ice {
   float x, y;
   float speed=10;
@@ -26,6 +26,7 @@ class Ice {
     if (y<0) ices.remove(this);
   }
 
+//check if it destroys the brick
   void DestroyedBrick(Brick brick) {
     if (!IceActive || !brick.isActive()) return;
     //if the y coordinate of the ice is less than the bottom of the brick then both the ice and the brick will be the destroyed (inactive)
@@ -37,6 +38,7 @@ class Ice {
     }
   }
 
+//check if it destroys the obstacle 
   void DestroyedEnemy(Obstacle enemy) {
     if(enemy.dead || !IceActive)return;
     if (y<enemy.y+enemy.ObstacleHeight && x+IceWidth>enemy.x && x<enemy.x+enemy.ObstacleWidth) {
